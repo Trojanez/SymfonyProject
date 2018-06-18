@@ -1,0 +1,62 @@
+{% extends('template_club.html.twig') %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block header %}
+    <header>
+        <h1><a href="/home">Games</a></h1>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div id="main">
+        <div class="top">
+            <div class="title">
+                <h4>Club settings</h4>
+            </div>
+            {% for user_subscribed_date in users_subscribed_date %}
+            <p class="sub_date">You subscribed on {{ user_subscribed_date.date|date("d.m.Y") }}</p>
+            {% endfor %}
+            {% for user_downloads in users_downloads %}
+            <p class="downloads">You downloaded {{ user_downloads.downloads }} games</p>
+            {% endfor %}
+            <a href="/unsubscribe">Unsubscribe</a>
+        </div>
+        <div class="bottom">
+            <div class="title">
+                <h4>Your downloads</h4>
+            </div>
+            <ul>
+                <li>
+                    <img src="images/oc2.png">
+                    <div class="desc">
+                        <h5>Game title 1</h5>
+                        <p>Stand on the path of the Atonement, opening a new chapter in the history of the world of Chaos and Order. Go along with thousands of players on a journey whose goal will be to save the world and redeem the guilt for the terrible mistake of the past!</p>
+                    </div>
+                </li>
+                <li>
+                    <img src="images/oc2.png">
+                    <div class="desc">
+                        <h5>Game title 1</h5>
+                        <p>Stand on the path of the Atonement, opening a new chapter in the history of the world of Chaos and Order. Go along with thousands of players on a journey whose goal will be to save the world and redeem the guilt for the terrible mistake of the past!</p>
+                    </div>
+                </li>
+                <li>
+                    <img src="images/oc2.png">
+                    <div class="desc">
+                        <h5>Game title 1</h5>
+                        <p>Stand on the path of the Atonement, opening a new chapter in the history of the world of Chaos and Order. Go along with thousands of players on a journey whose goal will be to save the world and redeem the guilt for the terrible mistake of the past!</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="pagination">
+                <a href="#">&laquo;</a>
+                <a href="#">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">&raquo;</a>
+            </div>
+        </div>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends('base.html.twig') %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+    <header>
+        <h1><a href="/home">Games({{ header }})</a></h1>
+        {% for user in users if user.is_subscribe == 1 %}
+            <p>You are member of Game Club</p>
+        {% else %}
+        {% endfor %}
+        {% for message in app.flashes('success') %}
+        <div class="middle_head_active">
+            <div class="msg">
+                <p>{{ message }}</p>
+            </div>
+            <p><a href="/cart">check out your cart to download games</a></p>
+        </div>
+        {% else %}
+        <div class="middle_head_disactive"></div>
+        {% endfor %}
+        {% if count is defined and count != 0 %}
+        <div class="middle_head_active" style="background: #fff;">
+            <p><a href="/cart">You have added {{ count }} game(s) to cart. Check out it to download games.</a></p>
+        </div>
+        {% endif %}
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div id="main">
+        <div class="top">
+            <div class="title">
+                <h4>{{ category.name }}</h4>
+            </div>
+            <div class="items">
+                {% for item in product %}
+                <ul>
+                    <li>
+                        <img src='images/{{ item.image }}.png'>
+                        <div class="desc">
+                            <h5>{{ item.name }}</h5>
+                            <p>{{ item.description }}</p>
+                        </div>
+                        {% for user in users if user.is_subscribe == 1 %}
+                            <a href="/product/{{ item.id }}">Add to cart</a>
+                        {% else %}
+                            <a href="/product/{{ item.id }}">Read more</a>
+                        {% endfor %}
+                    </li>
+                </ul>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="middle">
+            {% for user in users if user.is_subscribe == 1 %}
+            {% else %}
+            <div class="title">
+                <h4>Subscribe and download games</h4>
+            </div>
+            <div class="sub_details">
+                <h2>Subscribe for free</h2>
+                <p class="download_details">Download as much as you want</p>
+                <button onclick='document.getElementById("myForm").submit();'>Subscribe</button>
+                <p class="sign_free">1st day free then 1$ per day</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="bottom">
+            <div class="title">
+                <h4>{{ category1.name }}</h4>
+            </div>
+                {% for item1 in product1 %}
+                <ul>
+                    <li>
+                        <img src='images/{{ item1.image }}.png'>
+                        <div class="desc">
+                            <h5>{{ item1.name }}</h5>
+                            <p>{{ item1.description }}</p>
+                        </div>
+                        {% for user in users if user.is_subscribe == 1 %}
+                            <a href="/product/{{ item1.id }}">Add to cart</a>
+                        {% else %}
+                            <a href="/product/{{ item1.id }}">Read more</a>
+                        {% endfor %}
+                    </li>
+                </ul>
+                {% endfor %}
+        </div>
+    </div>
+    <form id="myForm" action="" method="post" style="display: none">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+    </form>
+{% endblock %}
+
+{% block footer %}
+    <div id="footer">
+        {% for user in users if user.is_subscribe == 1 %}
+            <a href="/cart">Your cart</a>
+            <a href="/club">Club settings</a>
+        {% else %}
+        {% endfor %}
+    </div>
+{% endblock %}

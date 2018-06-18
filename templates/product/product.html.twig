@@ -1,0 +1,93 @@
+{% extends('template_product.html.twig') %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block header %}
+    <header>
+        <h1><a href="/home">Games</a></h1>
+        {% for user in users if user.is_subscribe == 1 %}
+            <p>You are member of Game Club</p>
+        {% else %}
+        {% endfor %}
+        {% for message in app.flashes('success') %}
+            <div class="middle_head_active">
+                <div class="msg">
+                    <p>{{ message }}</p>
+                </div>
+                <p><a href="/cart">check out your cart to download games</a></p>
+            </div>
+        {% else %}
+            <div class="middle_head_disactive"></div>
+        {% endfor %}
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div id="main">
+        <div class="title">
+            <h4 id="title">{{ product.name }}</h4>
+        </div>
+        <div class="game_desc">
+            <img id="img" src="../images/{{ product.image }}.png">
+            <div class="desc">
+                <p id="desc">{{ product.description }}</p>
+            </div>
+        </div>
+        <div id="images">
+            <img class="visible" src="../images/screens/{{ screen.name }}.png">
+            {% for screen1 in screens %}
+                <img src="../images/screens/{{ screen1.name }}.png">
+            {% endfor %}
+        </div>
+        <div id="pagination">
+            <button class="prev" onclick="down()">&laquo;</button>
+            <span id="first">1</span>
+            <span class="delimeter">/</span>
+            {% for sum in screenSum %}
+                <span id="all">{{ sum.sum }}</span>
+            {% endfor %}
+            <button class="next" onclick="up()">&raquo;</button>
+        </div>
+        <div class="btns">
+            {% for user in users if user.is_subscribe == 1 %}
+                <a href="/product/add/{{ product.id }}" id="send">Add to cart</a>
+            {% else %}
+                <button onclick='document.getElementById("myForm").submit();'>Subscribe</button>
+            {% endfor %}
+        </div>
+    </div>
+    <form id="myForm" action="" method="post" style="display: none">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+    </form>
+{% endblock %}
+
+{% block script %}
+    {#<script>
+        $("#tag-form").on('submit', function(e){
+            $this = $(this);
+            var button_content = $('#send');
+            button_content.html('Adding...');
+            jQuery.ajax({
+                type: "POST",
+                url: $this.attr('action'), // here is a route variable
+                dataType: 'JSON',
+                data: {
+                    title: 'fgd',
+                    desc: 'gfdgdfsd'
+                },
+                success: function (data) {
+                    if(data.success == false){
+                        alert('error');
+                    }else{
+                        $('#title_cart').text(data.title);
+                        $('#desc_cart').text(data.desc);
+                        document.location.href = Routing::generate('cart');
+                    }
+                },
+            });
+            e.preventDefault();
+        });
+    </script>#}
+{% endblock %}

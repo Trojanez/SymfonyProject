@@ -1,0 +1,91 @@
+@media (min-width: 300px) and (max-width: 767px) {
+    .layout {
+        width: 100%;
+        padding: 0;
+    }
+    #main .top .sub_date {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        margin-left: 20px;
+        font-size:3vw;
+    }
+    #main .top .downloads {
+        margin-left: 20px;
+        margin-bottom: 10px;
+        font-size:3vw;
+    }
+    #main .top a {
+        display: block;
+        width: 87%;
+        text-align: center;
+        padding: 7px 5px;
+        margin: 0 0 15px 20px;
+        text-transform: uppercase;
+        font-size:12px;
+        background-color: #5A6978;
+        border: none;
+        border-radius: 3px;
+        color: #fff;
+    }
+    #main .bottom {
+        width: 100%;
+        display: block;
+    }
+    #main .bottom .title {
+        width: 100%;
+        height: 35px;
+        background-color: #969FAA;
+        margin-top: 2px;
+    }
+    #main .bottom .title h4 {
+        color: #fff;
+        text-align: center;
+        font-size:3vw;
+        line-height: 35px;
+        text-transform: uppercase;
+    }
+    #main .bottom ul {
+        display: block;
+        width: 100%;
+    }
+    #main .bottom ul li {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        margin-bottom: 10px;
+    }
+    #main .bottom ul li img {
+        width: 35px;
+        height: 35px;
+        margin: 22px 20px 0 25px;
+    }
+    #main .bottom ul li .desc {
+        width: 100%;
+        overflow: hidden;
+        margin-left: 15px;
+    }
+    #main .bottom ul li .desc h5 {
+        margin-top: 15px;
+        font-size:4vw;
+    }
+    #main .bottom ul li .desc p {
+        width: 60%;
+        height: 33px;
+        font-size:10px;
+        overflow: hidden;
+    }
+    #main .bottom .pagination {
+        display: inline-block;
+        float: right;
+        margin-right: 15px;
+    }
+
+    #main .bottom .pagination a {
+        font-size:3vw;
+        color: black;
+        float: left;
+        padding: 8px 3px;
+        text-decoration: none;
+    }
+}

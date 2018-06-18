@@ -1,0 +1,38 @@
+{% extends('template_cart.html.twig') %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block header %}
+    <header>
+        <h1><a href="/home">Games</a></h1>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div id="main">
+        <div class="top">
+            <div class="title">
+                <h4>Your cart</h4>
+            </div>
+            {% for product in products if products is defined %}
+            <div class="items">
+                <ul>
+                    <li>
+                        <img src='images/{{ product.image }}.png'>
+                        <div class="desc">
+                            <h5>{{ product.name }}</h5>
+                            <p>{{ product.description }}</p>
+                        </div>
+                        <a href="/cart/download/{{ product.id }}">Download</a>
+                    </li>
+                </ul>
+            </div>
+            {% else %}
+            <h3 id="empty_cart">Your cart is empty</h3>
+            {% endfor %}
+            <a id="to_empty" href="/cart/clear">Очистить корзину</a>
+        </div>
+    </div>
+{% endblock %}
