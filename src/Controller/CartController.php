@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\User;
+use App\Entity\UserProduct;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,40 +21,40 @@ class CartController extends AbstractController
      */
     public function index( Request $request )
     {
-
-        $product = new Product();
-
         $manager = $this->getDoctrine()->getManager();
+        $session = $request->getSession();
+        $header = $request->headers->get('x-user-id');
 
-        $product = $manager->getRepository(Product::class)->getProductIfInCartAndNotDownloaded();
+        // check if user subscribed or not
+        $userSubscribed = $manager->getRepository(User::class)->getUserSubscribeInfo($header);
+
+        $productsInCart = $session->get('product');
+
+        if($productsInCart)
+        {
+            $productsIds = array_keys($productsInCart);
+            $products = $manager->getRepository(Product::class)->showProductsFromCart($productsIds);
+        } else {
+            $products = null;
+        }
 
         return $this->render('cart/cart.html.twig', array(
             'title' => 'Gameloft Games',
-            'products' => $product
+            'products' => $products,
+            'users' => $userSubscribed
         ));
     }
 
     /**
      * @Route("/cart/clear", name="cartClear")
      */
-    public function clear( Request $request )
+    public function clear(Request $request)
     {
         $session = $request->getSession();
 
         if($session->get('product') != null)
         {
-            foreach($session->get('product') as $key => $value)
-            {
-                $product = new Product();
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $product = $entityManager->getRepository(Product::class)->find($key);
-                $product->setIsInCart(0);
-
-                $entityManager->flush();
-
-                $session->clear();
-            }
+            $session->clear();
             return $this->redirectToRoute('home');
         } else {
             return new Response('Your cart is already empty');
@@ -63,20 +66,29 @@ class CartController extends AbstractController
      */
     public function download(Request $request, $id)
     {
-        $session = $request->getSession();
-        $product = new Product();
-
         $entityManager = $this->getDoctrine()->getManager();
+        $header = $request->headers->get('x-user-id');
+        $session = $request->getSession();
 
-        $product = $entityManager->getRepository(Product::class)->find($id);
+        $productsInCart = $session->get('product');
 
-        $product->setIsDownloaded(1);
-        $product->setIsInCart(0);
+        if($productsInCart)
+        {
+            $user = $entityManager->getRepository(User::class)->findOneBy(['phone' => $header]);
+            $game = $entityManager->getRepository(Product::class)->find($id);
+            $product = new UserProduct();
 
-        $entityManager->flush();
+            $product->setUser($user);
+            $product->setProduct($game);
+            $product->setIsDownloaded(1);
 
-        $session->clear();
+            $entityManager->persist($product);
+            $entityManager->flush();
 
-        return $this->redirectToRoute('cart');
+            unset($productsInCart[$id]);
+            $session->set('product', $productsInCart);
+
+            return $this->redirectToRoute('cart');
+        }
     }
 }

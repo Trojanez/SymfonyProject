@@ -11,6 +11,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\User;
+use App\Entity\UserProduct;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,30 +24,49 @@ class HomeController extends AbstractController
      */
     public function index(Request $request)
     {
-
-        $header = $request->headers->get('x-user-id');
-
         // create Manager
         $entityManager = $this->getDoctrine()->getManager();
 
+        $session = $request->getSession();
+        $header = $request->headers->get('x-user-id');
+
+
         // check if user subscribed or not
-        $userSubscribed = new User();
         $userSubscribed = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
 
-        //find the first Category and its products
-        $category1 = new Category();
         $category1 = $entityManager->getRepository(Category::class)->find(1);
-        $product1 = new Product();
-        $product1 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(1);
-
-        // Find the first product for the middle Subscribe button
-        /*$productFirst = $entityManager->getRepository(Product::class)->find(1);*/
-
-        // find the second Category and its products
-        $category2 = new Category();
         $category2 = $entityManager->getRepository(Category::class)->find(2);
-        $product2 = new Product();
-        $product2 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(2);
+
+
+        $productsInCart = $session->get('product');
+        $downloadedGames = $entityManager->getRepository(UserProduct::class)->getGamesDownloaded();
+        $ids = array_column($downloadedGames, "id");
+
+        $product1 = $entityManager->getRepository(Product::class)->findProductsByCategoryId(1, $ids);
+        dump($product1);
+        if($userSubscribed)
+        {
+
+            if($productsInCart)
+            {
+                $productsIds = array_keys($productsInCart);
+
+                $product1 = $entityManager->getRepository(Product::class)->showProductsNotInCart(1, $productsIds);
+
+                $product2 = $entityManager->getRepository(Product::class)->showProductsNotInCart(2, $productsIds);
+            } else
+            {
+                //find the first Category and its products
+                $product1 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(1);
+
+                $product2 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(2);
+            }
+        } else
+        {
+            //find the first Category and its products
+            $product1 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(1);
+            $product2 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(2);
+        }
 
         // subscribe user
         $user = new User();
@@ -84,8 +104,6 @@ class HomeController extends AbstractController
                 return $this->redirectToRoute('home');
             }
         }
-
-        $session = $request->getSession();
 
         // count amount of items added to the cart
         $count = 0;
@@ -145,8 +163,6 @@ class HomeController extends AbstractController
         $product = new Product();
         $product->setName('Order and Chaos Online');
         $product->setDescription('5 races available: Elves and Humans fight for Order, Orcs and Undead for Chaos, Mendels are neutral. Choose your gender, appearance, class and talents.');
-        $product->setIsDownloaded(0);
-        $product->setIsInCart(0);
         $product->setImage('oc1');
 
         $entityManager->persist($product);

@@ -33,16 +33,6 @@ class Product
     private $description;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $is_downloaded;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $is_in_cart;
-
-    /**
      * @ORM\Column(type="string", length=100)
      */
     private $image;

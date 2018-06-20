@@ -80,4 +80,15 @@ class UserRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+    public function getUserId($param)
+    {
+        $query = $this->createQueryBuilder('e')
+            ->select('e.id')
+            ->where('e.phone = :phone')
+            ->setParameter('phone', $param)
+            ->getQuery();
+
+        return $query->getSingleScalarResult();
+    }
+
 }

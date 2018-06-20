@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\Screen;
 use App\Entity\User;
+use App\Entity\UserProduct;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,33 +84,24 @@ class ProductController extends AbstractController
      */
     public function set(Request $request, $id)
     {
+        $header = $request->headers->get('x-user-id');
+
         $id = intval($id);
         $session = $request->getSession();
 
-        $productInCart = [];
+        $productsInCart = [];
 
         if($session->get('product'))
         {
-            $productInCart = $session->get('product');
+            $productsInCart = $session->get('product');
         }
 
-        if(!array_key_exists($id, $productInCart))
+        if(!array_key_exists($id, $productsInCart))
         {
-            $productInCart[$id] = 1;
+            $productsInCart[$id] = 1;
         }
 
-        $session->set('product', $productInCart);
-
-        foreach($session->get('product') as $key => $value)
-        {
-            $product = new Product();
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $product = $entityManager->getRepository(Product::class)->find($key);
-            $product->setIsInCart(1);
-
-            $entityManager->flush();
-        }
+        $session->set('product', $productsInCart);
 
         return $this->redirectToRoute('home');
     }

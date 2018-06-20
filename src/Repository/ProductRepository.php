@@ -48,13 +48,25 @@ class ProductRepository extends ServiceEntityRepository
     }
     */
 
+    public function findProductsByCategoryId($id, $param)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->join('p.category', 'c')
+            ->where('c.id = :id')
+            ->andWhere('p.id NOT IN (:param)')
+            ->setParameter('id', $id)
+            ->setParameter('param', implode(',', $param))
+            ->setMaxResults(3)
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
     public function findAllProductsByCategoryId($id)
     {
-        $query = $this->createQueryBuilder('e')
-            ->join('e.category', 'r')
-            ->where('r.id = :id')
-            ->andWhere('e.is_in_cart != 1')
-            ->andWhere('e.is_downloaded != 1')
+        $query = $this->createQueryBuilder('p')
+            ->join('p.category', 'c')
+            ->where('c.id = :id')
             ->setParameter('id', $id)
             ->setMaxResults(3)
             ->getQuery();
@@ -62,26 +74,28 @@ class ProductRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function getProductIfInCartAndNotDownloaded()
+    public function showProductsFromCart($param)
     {
-        $query = $this->createQueryBuilder('e')
-            ->where('e.is_in_cart = :param')
-            ->andWhere('e.is_downloaded != 1')
-            ->setParameter('param', 1)
+        $query = $this->createQueryBuilder('p')
+            ->where('p.id IN (:param)')
+            ->setParameter('param', $param)
             ->getQuery();
 
         return $query->getResult();
     }
 
-    public function getDownloadedGames()
+    public function showProductsNotInCart($id, $param)
     {
-        $query = $this->createQueryBuilder('e')
-            ->where('e.is_in_cart = :param')
-            ->andWhere('e.is_downloaded != 1')
-            ->setParameter('param', 1)
+        $query = $this->createQueryBuilder('p')
+            ->join('p.category', 'c')
+            ->where('c.id = :id')
+            ->andWhere('p.id NOT IN (:param)')
+            ->setParameter('id', $id)
+            ->setParameter('param', $param)
+            ->setMaxResults(3)
             ->getQuery();
 
         return $query->getResult();
     }
-    
+
 }

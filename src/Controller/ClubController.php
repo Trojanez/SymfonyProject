@@ -16,9 +16,8 @@ class ClubController extends AbstractController
      */
     public function index(Request $request)
     {
-        $header = $request->headers->get('x-user-id');
         $entityManager = $this->getDoctrine()->getManager();
-        $user = new User();
+        $header = $request->headers->get('x-user-id');
 
         $userDownloadDate = $entityManager->getRepository(User::class)->getSubscribedDateForUser($header);
         $userDownloads = $entityManager->getRepository(User::class)->getDownloadsForUser($header);
@@ -39,9 +38,7 @@ class ClubController extends AbstractController
 
     public function unsubscribe(Request $request)
     {
-
-        $user = new User();
-
+        $session = $request->getSession();
         $header = $request->headers->get('x-user-id');
 
         $em = $this->getDoctrine()->getManager();
@@ -49,6 +46,7 @@ class ClubController extends AbstractController
 
         $user->setIsSubscribe(0);
         $em->flush();
+        $session->clear();
 
         return $this->redirectToRoute('home');
     }

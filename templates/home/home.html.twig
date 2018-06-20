@@ -21,11 +21,13 @@
         {% else %}
         <div class="middle_head_disactive"></div>
         {% endfor %}
+        {% for user in users if user.is_subscribe == 1 %}
         {% if count is defined and count != 0 %}
         <div class="middle_head_active" style="background: #fff;">
             <p><a href="/cart">You have added {{ count }} game(s) to cart. Check out it to download games.</a></p>
         </div>
         {% endif %}
+        {% endfor %}
     </header>
 {% endblock %}
 
@@ -72,22 +74,22 @@
             <div class="title">
                 <h4>{{ category1.name }}</h4>
             </div>
-                {% for item1 in product1 %}
-                <ul>
-                    <li>
-                        <img src='images/{{ item1.image }}.png'>
-                        <div class="desc">
-                            <h5>{{ item1.name }}</h5>
-                            <p>{{ item1.description }}</p>
-                        </div>
-                        {% for user in users if user.is_subscribe == 1 %}
-                            <a href="/product/{{ item1.id }}">Add to cart</a>
-                        {% else %}
-                            <a href="/product/{{ item1.id }}">Read more</a>
-                        {% endfor %}
-                    </li>
-                </ul>
-                {% endfor %}
+            {% for item1 in product1 %}
+            <ul>
+                <li>
+                    <img src='images/{{ item1.image }}.png'>
+                    <div class="desc">
+                        <h5>{{ item1.name }}</h5>
+                        <p>{{ item1.description }}</p>
+                    </div>
+                    {% for user in users if user.is_subscribe == 1 %}
+                        <a href="/product/{{ item1.id }}">Add to cart</a>
+                    {% else %}
+                        <a href="/product/{{ item1.id }}">Read more</a>
+                    {% endfor %}
+                </li>
+            </ul>
+            {% endfor %}
         </div>
     </div>
     <form id="myForm" action="" method="post" style="display: none">
