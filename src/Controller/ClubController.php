@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Entity\User;
+use App\Entity\UserProduct;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,14 +20,31 @@ class ClubController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $header = $request->headers->get('x-user-id');
 
-        $userDownloadDate = $entityManager->getRepository(User::class)->getSubscribedDateForUser($header);
-        $userDownloads = $entityManager->getRepository(User::class)->getDownloadsForUser($header);
+        $userSubscribed = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
+
+        if($userSubscribed)
+        {
+            $CurrentUserId = $entityManager->getRepository(User::class)->getUserId($header);
+            if(!empty($CurrentUserId))
+            {
+                $product = $entityManager->getRepository(UserProduct::class)->getAllDownloadedGames($CurrentUserId);
+            }
+
+            $userDownloadDate = $entityManager->getRepository(User::class)->getSubscribedDateForUser($CurrentUserId);
+            $userDownloads = $entityManager->getRepository(UserProduct::class)->getAmountOfDownloadedGames($CurrentUserId);
+        } else {
+            $userDownloadDate = null;
+            $userDownloads = null;
+            $product = null;
+        }
 
 
         return $this->render('club/club.html.twig', array(
             'title' => 'Gameloft Games',
+            'users' => $userSubscribed,
             'users_subscribed_date' => $userDownloadDate,
-            'users_downloads' => $userDownloads
+            'users_downloads' => $userDownloads,
+            'products' => $product
         ));
     }
 

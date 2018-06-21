@@ -64,12 +64,38 @@ class UserProductRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function getGamesDownloaded()
+    public function getDownloadedGames($userId)
     {
         $query = $this->createQueryBuilder('u')
-            ->select('p.id')
+            ->select('u')
+            ->where('u.is_downloaded = 1')
+            ->andWhere('u.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery();
+
+        return $query->getScalarResult();
+    }
+
+    public function getAmountOfDownloadedGames($userId)
+    {
+        $query = $this->createQueryBuilder('u')
+            ->select('count(u.is_downloaded)')
+            ->where('u.is_downloaded = 1')
+            ->andWhere('u.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery();
+
+        return $query->getSingleScalarResult();
+    }
+
+    public function getAllDownloadedGames($userId)
+    {
+        $query = $this->createQueryBuilder('u')
+            ->select('p.id', 'p.name', 'p.description', 'p.image')
             ->join('u.product', 'p')
             ->where('u.is_downloaded = 1')
+            ->andWhere('u.user = :param')
+            ->setParameter('param', $userId)
             ->getQuery();
 
         return $query->getScalarResult();

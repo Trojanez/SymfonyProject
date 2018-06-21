@@ -74,11 +74,11 @@ class CartController extends AbstractController
 
         if($productsInCart)
         {
-            $user = $entityManager->getRepository(User::class)->findOneBy(['phone' => $header]);
+            $userId = $entityManager->getRepository(User::class)->findOneBy(['phone' => $header]);
             $game = $entityManager->getRepository(Product::class)->find($id);
             $product = new UserProduct();
 
-            $product->setUser($user);
+            $product->setUser($userId);
             $product->setProduct($game);
             $product->setIsDownloaded(1);
 

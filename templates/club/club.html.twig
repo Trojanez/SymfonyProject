@@ -7,10 +7,15 @@
 {% block header %}
     <header>
         <h1><a href="/home">Games</a></h1>
+        {% for user in users if user.is_subscribe == 1 %}
+            <p>You are member of Game Club</p>
+        {% else %}
+        {% endfor %}
     </header>
 {% endblock %}
 
 {% block body %}
+    {% for user in users if user.is_subscribe == 1 %}
     <div id="main">
         <div class="top">
             <div class="title">
@@ -19,9 +24,7 @@
             {% for user_subscribed_date in users_subscribed_date %}
             <p class="sub_date">You subscribed on {{ user_subscribed_date.date|date("d.m.Y") }}</p>
             {% endfor %}
-            {% for user_downloads in users_downloads %}
-            <p class="downloads">You downloaded {{ user_downloads.downloads }} games</p>
-            {% endfor %}
+            <p class="downloads">You downloaded {{ users_downloads }} games</p>
             <a href="/unsubscribe">Unsubscribe</a>
         </div>
         <div class="bottom">
@@ -29,27 +32,15 @@
                 <h4>Your downloads</h4>
             </div>
             <ul>
+                {% for product in products %}
                 <li>
-                    <img src="images/oc2.png">
+                    <img src="images/{{ product.image }}.png">
                     <div class="desc">
-                        <h5>Game title 1</h5>
-                        <p>Stand on the path of the Atonement, opening a new chapter in the history of the world of Chaos and Order. Go along with thousands of players on a journey whose goal will be to save the world and redeem the guilt for the terrible mistake of the past!</p>
+                        <h5>{{ product.name }}</h5>
+                        <p>{{ product.description }}</p>
                     </div>
                 </li>
-                <li>
-                    <img src="images/oc2.png">
-                    <div class="desc">
-                        <h5>Game title 1</h5>
-                        <p>Stand on the path of the Atonement, opening a new chapter in the history of the world of Chaos and Order. Go along with thousands of players on a journey whose goal will be to save the world and redeem the guilt for the terrible mistake of the past!</p>
-                    </div>
-                </li>
-                <li>
-                    <img src="images/oc2.png">
-                    <div class="desc">
-                        <h5>Game title 1</h5>
-                        <p>Stand on the path of the Atonement, opening a new chapter in the history of the world of Chaos and Order. Go along with thousands of players on a journey whose goal will be to save the world and redeem the guilt for the terrible mistake of the past!</p>
-                    </div>
-                </li>
+                {% endfor %}
             </ul>
             <div class="pagination">
                 <a href="#">&laquo;</a>
@@ -59,4 +50,7 @@
                 <a href="#">&raquo;</a>
             </div>
         </div>
+    {% else %}
+        <h3 id="not_subscribed">Only subscribed users can view this page!</h3>
+    {% endfor %}
 {% endblock %}

@@ -62,8 +62,8 @@ class UserRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('e')
             ->select('e.date')
-            ->where('e.phone = :phone')
-            ->setParameter('phone', $param)
+            ->where('e.id = :param')
+            ->setParameter('param', $param)
             ->getQuery();
 
         return $query->getResult();

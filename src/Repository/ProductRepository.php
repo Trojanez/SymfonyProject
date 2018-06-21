@@ -48,14 +48,14 @@ class ProductRepository extends ServiceEntityRepository
     }
     */
 
-    public function findProductsByCategoryId($id, $param)
+    public function findProductsByCategoryId($id, array $param)
     {
         $query = $this->createQueryBuilder('p')
             ->join('p.category', 'c')
             ->where('c.id = :id')
             ->andWhere('p.id NOT IN (:param)')
             ->setParameter('id', $id)
-            ->setParameter('param', implode(',', $param))
+            ->setParameter('param', $param)
             ->setMaxResults(3)
             ->getQuery();
 
@@ -84,18 +84,19 @@ class ProductRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function showProductsNotInCart($id, $param)
+    public function showProductsNotInCart($id, $param, $param2)
     {
         $query = $this->createQueryBuilder('p')
             ->join('p.category', 'c')
             ->where('c.id = :id')
             ->andWhere('p.id NOT IN (:param)')
+            ->andWhere('p.id NOT IN (:param2)')
             ->setParameter('id', $id)
             ->setParameter('param', $param)
+            ->setParameter('param2', $param2)
             ->setMaxResults(3)
             ->getQuery();
 
         return $query->getResult();
     }
-
 }

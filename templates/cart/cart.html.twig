@@ -7,6 +7,10 @@
 {% block header %}
     <header>
         <h1><a href="/home">Games</a></h1>
+        {% for user in users if user.is_subscribe == 1 %}
+            <p>You are member of Game Club</p>
+        {% else %}
+        {% endfor %}
     </header>
 {% endblock %}
 

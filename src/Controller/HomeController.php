@@ -30,42 +30,40 @@ class HomeController extends AbstractController
         $session = $request->getSession();
         $header = $request->headers->get('x-user-id');
 
-
-        // check if user subscribed or not
-        $userSubscribed = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
-
         $category1 = $entityManager->getRepository(Category::class)->find(1);
         $category2 = $entityManager->getRepository(Category::class)->find(2);
 
-
         $productsInCart = $session->get('product');
-        $downloadedGames = $entityManager->getRepository(UserProduct::class)->getGamesDownloaded();
-        $ids = array_column($downloadedGames, "id");
 
-        $product1 = $entityManager->getRepository(Product::class)->findProductsByCategoryId(1, $ids);
-        dump($product1);
+        // check if user subscribed or not
+        $userSubscribed = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
         if($userSubscribed)
         {
+            $CurrentUserId = $entityManager->getRepository(User::class)->getUserId($header);
+            if(!empty($CurrentUserId))
+            {
+                $downloadedGames = $entityManager->getRepository(UserProduct::class)->getDownloadedGames($CurrentUserId);
+                $ids = implode(',', array_column($downloadedGames, "u_product_id"));
+                $integerIDs = array_map('intval', explode(',', $ids));
+            }
 
             if($productsInCart)
             {
                 $productsIds = array_keys($productsInCart);
 
-                $product1 = $entityManager->getRepository(Product::class)->showProductsNotInCart(1, $productsIds);
-
-                $product2 = $entityManager->getRepository(Product::class)->showProductsNotInCart(2, $productsIds);
+                $product1 = $entityManager->getRepository(Product::class)->showProductsNotInCart(1, $productsIds, $integerIDs);
+                $product2 = $entityManager->getRepository(Product::class)->showProductsNotInCart(2, $productsIds, $integerIDs);
             } else
             {
                 //find the first Category and its products
-                $product1 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(1);
-
-                $product2 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(2);
+                $product1 = $entityManager->getRepository(Product::class)->findProductsByCategoryId(1, $integerIDs);
+                $product2 = $entityManager->getRepository(Product::class)->findProductsByCategoryId(2, $integerIDs);
             }
         } else
         {
-            //find the first Category and its products
             $product1 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(1);
             $product2 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(2);
+            //find the first Category and its products
         }
 
         // subscribe user
