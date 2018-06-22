@@ -75,17 +75,15 @@
         font-size:10px;
         overflow: hidden;
     }
-    #main .bottom .pagination {
-        display: inline-block;
+    #main .navigation {
         float: right;
-        margin-right: 15px;
+        overflow: hidden;
     }
-
-    #main .bottom .pagination a {
-        font-size:3vw;
-        color: black;
-        float: left;
-        padding: 8px 3px;
-        text-decoration: none;
+    #main .navigation a {
+        color: #000;
+    }
+    #main .navigation .current {
+        color: #000;
+        font-weight: bold;
     }
 }

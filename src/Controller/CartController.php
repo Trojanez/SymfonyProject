@@ -7,14 +7,17 @@ use App\Entity\Product;
 use App\Entity\User;
 use App\Entity\UserProduct;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class CartController extends AbstractController
+class CartController extends Controller
 {
     /**
      * @Route("/cart", options={"expose"=true}, name="cart")
@@ -75,7 +78,9 @@ class CartController extends AbstractController
         if($productsInCart)
         {
             $userId = $entityManager->getRepository(User::class)->findOneBy(['phone' => $header]);
-            $game = $entityManager->getRepository(Product::class)->find($id);
+            $game = $entityManager->getRepository(Product::class)->findOneBy(['image' => $id]);
+            $gameId = $entityManager->getRepository(Product::class)->getIdAccordingToImageName($id);
+
             $product = new UserProduct();
 
             $product->setUser($userId);
@@ -85,10 +90,32 @@ class CartController extends AbstractController
             $entityManager->persist($product);
             $entityManager->flush();
 
-            unset($productsInCart[$id]);
+            unset($productsInCart[$gameId]);
             $session->set('product', $productsInCart);
 
-            return $this->redirectToRoute('cart');
+            /**
+             * $basePath can be either exposed (typically inside web/)
+             * or "internal"
+             */
+            $basePath = $webPath = $this->get('kernel')->getProjectDir() . '/public/images';
+            $filePath = $basePath.'/'.$id.'.png';
+            $content = file_get_contents($filePath);
+
+            // check if file exists
+            $fs = new FileSystem();
+            if (!$fs->exists($filePath)) {
+                throw $this->createNotFoundException();
+            }
+
+            $response = new Response();
+
+            //set headers
+            $response->headers->set('Content-Type', 'image/png');
+            $response->headers->set('Content-Disposition', 'attachment;filename="'.$id.'.png');
+
+            $response->setContent($content);
+
+            return $response;
         }
     }
 }

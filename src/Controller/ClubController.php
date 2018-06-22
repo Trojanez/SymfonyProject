@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Entity\User;
 use App\Entity\UserProduct;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -15,7 +16,7 @@ class ClubController extends AbstractController
     /**
      * @Route("/club", name="club")
      */
-    public function index(Request $request)
+    public function index(PaginatorInterface $paginator, Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $header = $request->headers->get('x-user-id');
@@ -28,6 +29,15 @@ class ClubController extends AbstractController
             if(!empty($CurrentUserId))
             {
                 $product = $entityManager->getRepository(UserProduct::class)->getAllDownloadedGames($CurrentUserId);
+
+                /**
+                 * @var $paginator \Knp\Component\Pager\Paginator
+                 */
+                $result = $paginator->paginate(
+                    $product,
+                    $request->query->getInt('page', 1),
+                    $request->query->getInt('limit', 3)
+                );
             }
 
             $userDownloadDate = $entityManager->getRepository(User::class)->getSubscribedDateForUser($CurrentUserId);
@@ -44,7 +54,7 @@ class ClubController extends AbstractController
             'users' => $userSubscribed,
             'users_subscribed_date' => $userDownloadDate,
             'users_downloads' => $userDownloads,
-            'products' => $product
+            'products' => $result
         ));
     }
 
@@ -56,14 +66,15 @@ class ClubController extends AbstractController
 
     public function unsubscribe(Request $request)
     {
+        $entityManager = $this->getDoctrine()->getManager();
         $session = $request->getSession();
         $header = $request->headers->get('x-user-id');
 
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneBy(array('phone' => $header));
+        $currentUserId = $entityManager->getRepository(User::class)->getUserId($header);
+        $user = $entityManager->getRepository(User::class)->findOneBy(['id' => $currentUserId]);
 
         $user->setIsSubscribe(0);
-        $em->flush();
+        $entityManager->flush();
         $session->clear();
 
         return $this->redirectToRoute('home');

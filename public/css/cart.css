@@ -1,6 +1,6 @@
 #main {
     position: relative;
-    height: 530px;
+    height: 500px;
 }
 #main .top #empty_cart {
     text-align: center;
@@ -9,6 +9,6 @@
 #main .top #to_empty {
     color: #B0413E;
     position: absolute;
-    top: 490px;
+    top: 480px;
     right: 15px;
 }

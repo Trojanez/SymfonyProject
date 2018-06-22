@@ -33,12 +33,12 @@ class HomeController extends AbstractController
         $category1 = $entityManager->getRepository(Category::class)->find(1);
         $category2 = $entityManager->getRepository(Category::class)->find(2);
 
-        $productsInCart = $session->get('product');
-
         // check if user subscribed or not
-        $userSubscribed = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
-        if($userSubscribed)
+        $userSubscribedAdditional = $entityManager->getRepository(User::class)->getUserSubscribeInfoAdditional($header);
+
+        if($userSubscribedAdditional == "1")
         {
+            $productsInCart = $session->get('product');
             $CurrentUserId = $entityManager->getRepository(User::class)->getUserId($header);
             if(!empty($CurrentUserId))
             {
@@ -63,7 +63,6 @@ class HomeController extends AbstractController
         {
             $product1 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(1);
             $product2 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(2);
-            //find the first Category and its products
         }
 
         // subscribe user
@@ -116,7 +115,7 @@ class HomeController extends AbstractController
             'category' => $category1,
             'product1' => $product2,
             'category1' => $category2,
-            'users' => $userSubscribed,
+            'users' => $userSubscribedAdditional,
             'header' => $header,
             'logged' => $user,
             'count' => $count
@@ -159,9 +158,9 @@ class HomeController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
 
         $product = new Product();
-        $product->setName('Order and Chaos Online');
-        $product->setDescription('5 races available: Elves and Humans fight for Order, Orcs and Undead for Chaos, Mendels are neutral. Choose your gender, appearance, class and talents.');
-        $product->setImage('oc1');
+        $product->setName('Six-Guns');
+        $product->setDescription('The first Android game to let you freely explore massive Wild West landscapes in Arizona and Oregon. 40 varied missions: Race horses, stop robbers, shoot targets, take back the fort and more!');
+        $product->setImage('sg');
 
         $entityManager->persist($product);
 

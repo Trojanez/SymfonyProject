@@ -99,4 +99,15 @@ class ProductRepository extends ServiceEntityRepository
 
         return $query->getResult();
     }
+
+    public function getIdAccordingToImageName($id)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('p.id')
+            ->where('p.image = :name')
+            ->setParameter('name',$id)
+            ->getQuery();
+
+        return $query->getSingleScalarResult();
+    }
 }

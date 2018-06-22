@@ -7,10 +7,11 @@
 {% block header %}
     <header>
         <h1><a href="/home">Games</a></h1>
-        {% for user in users if user.is_subscribe == 1 %}
+        {#{% for user in users if user.is_subscribe == 1 %}#}
+        {% if users == 1 %}
             <p>You are member of Game Club</p>
         {% else %}
-        {% endfor %}
+        {% endif %}
         {% for message in app.flashes('success') %}
         <div class="middle_head_active">
             <div class="msg">
@@ -21,13 +22,13 @@
         {% else %}
         <div class="middle_head_disactive"></div>
         {% endfor %}
-        {% for user in users if user.is_subscribe == 1 %}
+        {% if users == 1 %}
         {% if count is defined and count != 0 %}
         <div class="middle_head_active" style="background: #fff;">
             <p><a href="/cart">You have added {{ count }} game(s) to cart. Check out it to download games.</a></p>
         </div>
         {% endif %}
-        {% endfor %}
+        {% endif %}
     </header>
 {% endblock %}
 
@@ -46,18 +47,19 @@
                             <h5>{{ item.name }}</h5>
                             <p>{{ item.description }}</p>
                         </div>
-                        {% for user in users if user.is_subscribe == 1 %}
+                        {% if users == 1 %}
                             <a href="/product/{{ item.id }}">Add to cart</a>
                         {% else %}
                             <a href="/product/{{ item.id }}">Read more</a>
-                        {% endfor %}
+                        {% endif %}
                     </li>
                 </ul>
                 {% endfor %}
             </div>
         </div>
         <div class="middle">
-            {% for user in users if user.is_subscribe == 1 %}
+            {#{% for user in users if user.is_subscribe == 1 %}#}
+            {% if users == 1 %}
             {% else %}
             <div class="title">
                 <h4>Subscribe and download games</h4>
@@ -68,7 +70,7 @@
                 <button onclick='document.getElementById("myForm").submit();'>Subscribe</button>
                 <p class="sign_free">1st day free then 1$ per day</p>
             </div>
-            {% endfor %}
+            {% endif %}
         </div>
         <div class="bottom">
             <div class="title">
@@ -82,11 +84,11 @@
                         <h5>{{ item1.name }}</h5>
                         <p>{{ item1.description }}</p>
                     </div>
-                    {% for user in users if user.is_subscribe == 1 %}
+                    {% if users == 1 %}
                         <a href="/product/{{ item1.id }}">Add to cart</a>
                     {% else %}
                         <a href="/product/{{ item1.id }}">Read more</a>
-                    {% endfor %}
+                    {% endif %}
                 </li>
             </ul>
             {% endfor %}
@@ -99,10 +101,11 @@
 
 {% block footer %}
     <div id="footer">
-        {% for user in users if user.is_subscribe == 1 %}
+        {#{% for user in users if user.is_subscribe == 1 %}#}
+        {% if users == 1 %}
             <a href="/cart">Your cart</a>
             <a href="/club">Club settings</a>
         {% else %}
-        {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}
