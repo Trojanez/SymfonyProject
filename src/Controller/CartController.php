@@ -112,7 +112,6 @@ class CartController extends Controller
             //set headers
             $response->headers->set('Content-Type', 'image/png');
             $response->headers->set('Content-Disposition', 'attachment;filename="'.$id.'.png');
-
             $response->setContent($content);
 
             return $response;

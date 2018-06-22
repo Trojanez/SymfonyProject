@@ -47,6 +47,7 @@ class UserRepository extends ServiceEntityRepository
         ;
     }
     */
+
     public function getUserSubscribeInfo($param)
     {
         $query = $this->createQueryBuilder('e')
@@ -65,7 +66,7 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('phone', $param)
             ->getQuery();
 
-        return $query->getSingleScalarResult();
+        return $query->getResult();
     }
 
     public function getSubscribedDateForUser($param)

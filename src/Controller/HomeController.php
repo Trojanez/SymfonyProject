@@ -33,10 +33,15 @@ class HomeController extends AbstractController
         $category1 = $entityManager->getRepository(Category::class)->find(1);
         $category2 = $entityManager->getRepository(Category::class)->find(2);
 
+        // check if user exists in the DB
+        $checkUser = $entityManager->getRepository(User::class)->findOneBy(['phone' => $header]);
+
         // check if user subscribed or not
         $userSubscribedAdditional = $entityManager->getRepository(User::class)->getUserSubscribeInfoAdditional($header);
+        $userSubscribedAdditional = array_column($userSubscribedAdditional, 'is_subscribe');
+        $userSubscribedAdditional = array_shift($userSubscribedAdditional);
 
-        if($userSubscribedAdditional == "1")
+        if($checkUser != null and $userSubscribedAdditional == "1")
         {
             $productsInCart = $session->get('product');
             $CurrentUserId = $entityManager->getRepository(User::class)->getUserId($header);

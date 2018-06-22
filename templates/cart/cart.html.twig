@@ -30,17 +30,25 @@
                             <h5>{{ product.name }}</h5>
                             <p>{{ product.description }}</p>
                         </div>
-                        <a href="/cart/download/{{ product.image }}">Download</a>
+                        <a id='go' href="/cart/download/{{ product.image }}">Download</a>
                     </li>
                 </ul>
             </div>
+            <a id="to_empty" href="/cart/clear">Empty cart</a>
             {% else %}
             <h3 id="empty_cart">Your cart is empty</h3>
             {% endfor %}
-            <a id="to_empty" href="/cart/clear">Очистить корзину</a>
             {% else %}
                 <h3 id="not_subscribed">Only subscribed users can view this page!</h3>
             {% endfor %}
         </div>
     </div>
+
+    <script>
+        jQuery(document).on('click', '#go', function() {
+            setTimeout(function() {
+                window.location.href = '/cart';
+            }, 700);
+        });
+    </script>
 {% endblock %}
