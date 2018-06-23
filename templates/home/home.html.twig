@@ -6,7 +6,7 @@
 
 {% block header %}
     <header>
-        <h1><a href="/home">Games</a></h1>
+        <h1><a href="{{ path('home') }}">Games</a></h1>
         {#{% for user in users if user.is_subscribe == 1 %}#}
         {% if users == 1 %}
             <p>You are member of Game Club</p>
@@ -17,7 +17,7 @@
             <div class="msg">
                 <p>{{ message }}</p>
             </div>
-            <p><a href="/cart">check out your cart to download games</a></p>
+            <p><a href="{{ path('cart') }}">check out your cart to download games</a></p>
         </div>
         {% else %}
         <div class="middle_head_disactive"></div>
@@ -25,7 +25,7 @@
         {% if users == 1 %}
         {% if count is defined and count != 0 %}
         <div class="middle_head_active" style="background: #fff;">
-            <p><a href="/cart">You have added {{ count }} game(s) to cart. Check out it to download games.</a></p>
+            <p><a href="{{ path('cart') }}">You have added {{ count }} game(s) to cart. Check out it to download games.</a></p>
         </div>
         {% endif %}
         {% endif %}
@@ -103,8 +103,8 @@
     <div id="footer">
         {#{% for user in users if user.is_subscribe == 1 %}#}
         {% if users == 1 %}
-            <a href="/cart">Your cart</a>
-            <a href="/club">Club settings</a>
+            <a href="{{ path('cart') }}">Your cart</a>
+            <a href="{{ path('club') }}">Club settings</a>
         {% else %}
         {% endif %}
     </div>

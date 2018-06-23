@@ -59,7 +59,7 @@ class ClubController extends AbstractController
     }
 
     /**
-     * @Route("/unsubscribe")
+     * @Route("/unsubscribe", name="unsubscribe")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -71,6 +71,9 @@ class ClubController extends AbstractController
         $header = $request->headers->get('x-user-id');
 
         $currentUserId = $entityManager->getRepository(User::class)->getUserId($header);
+        $currentUserId = array_column($currentUserId, 'id');
+        $currentUserId = array_shift($currentUserId);
+
         $user = $entityManager->getRepository(User::class)->findOneBy(['id' => $currentUserId]);
 
         $user->setIsSubscribe(0);

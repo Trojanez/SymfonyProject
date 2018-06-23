@@ -20,15 +20,29 @@ use Symfony\Component\HttpFoundation\Response;
 class HomeController extends AbstractController
 {
     /**
-     * @Route("/home", options={"expose"=true}, name="home")
+     * @Route("/", options={"expose"=true}, name="home")
      */
     public function index(Request $request)
     {
-        // create Manager
+        // create Manager, get session, get header
         $entityManager = $this->getDoctrine()->getManager();
-
         $session = $request->getSession();
         $header = $request->headers->get('x-user-id');
+
+        // get Current user ID according to phone number
+        $CurrentUserId = $entityManager->getRepository(User::class)->getUserId($header);
+        $CurrentUserId = array_column($CurrentUserId, 'id');
+        $CurrentUserId = array_shift($CurrentUserId);
+
+        //get user phone according to ID
+        $userPhone = $entityManager->getRepository(User::class)->getUserPhone($CurrentUserId);
+        $userPhone = array_column($userPhone, 'phone');
+        $userPhone = array_shift($userPhone);
+
+        if($header != $userPhone)
+        {
+            $session->clear();
+        }
 
         $category1 = $entityManager->getRepository(Category::class)->find(1);
         $category2 = $entityManager->getRepository(Category::class)->find(2);
@@ -44,7 +58,6 @@ class HomeController extends AbstractController
         if($checkUser != null and $userSubscribedAdditional == "1")
         {
             $productsInCart = $session->get('product');
-            $CurrentUserId = $entityManager->getRepository(User::class)->getUserId($header);
             if(!empty($CurrentUserId))
             {
                 $downloadedGames = $entityManager->getRepository(UserProduct::class)->getDownloadedGames($CurrentUserId);

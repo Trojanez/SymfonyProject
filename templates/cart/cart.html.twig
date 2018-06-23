@@ -6,7 +6,7 @@
 
 {% block header %}
     <header>
-        <h1><a href="/home">Games</a></h1>
+        <h1><a href="{{ path('home') }}">Games</a></h1>
         {% for user in users if user.is_subscribe == 1 %}
             <p>You are member of Game Club</p>
         {% else %}
@@ -34,7 +34,7 @@
                     </li>
                 </ul>
             </div>
-            <a id="to_empty" href="/cart/clear">Empty cart</a>
+            <a id="to_empty" href="{{ path('cartClear') }}">Empty cart</a>
             {% else %}
             <h3 id="empty_cart">Your cart is empty</h3>
             {% endfor %}

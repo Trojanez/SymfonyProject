@@ -6,7 +6,7 @@
 
 {% block header %}
     <header>
-        <h1><a href="/home">Games</a></h1>
+        <h1><a href="{{ path('home') }}">Games</a></h1>
         {% for user in users if user.is_subscribe == 1 %}
             <p>You are member of Game Club</p>
         {% else %}
@@ -24,8 +24,8 @@
             {% for user_subscribed_date in users_subscribed_date %}
             <p class="sub_date">You subscribed on {{ user_subscribed_date.date|date("d.m.Y") }}</p>
             {% endfor %}
-            <p class="downloads">You downloaded {{ users_downloads }} games</p>
-            <a href="/unsubscribe">Unsubscribe</a>
+            <p class="downloads">You downloaded {{ users_downloads }} game(s)</p>
+            <a href="{{ path('unsubscribe') }}">Unsubscribe</a>
         </div>
         <div class="bottom">
             <div class="title">

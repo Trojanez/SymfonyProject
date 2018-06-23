@@ -4,7 +4,7 @@
         padding: 0;
     }
     #main {
-        height: 500px;
+        height: 450px;
     }
     #main .title {
         width: 100%;
@@ -54,7 +54,7 @@
     }
     #main #pagination {
         text-align: center;
-        margin-top: 70vw;
+        margin-top: 68vw;
     }
     #main #pagination button {
         background-color: Transparent;
@@ -72,8 +72,8 @@
         text-align: center;
         margin-top: 15px;
     }
-    #main .btns a {
-        padding: 1.5vw 13vw 1.5vw 13vw;
+    #main .btns #send {
+        padding: 2vw 13vw 1.5vw 13vw;
         background-color: #77D353;
         border: none;
         color: #fff;
@@ -84,12 +84,13 @@
     }
     #main .btns button {
         width: 200px;
-        height: 30px;
+        height: 35px;
         background-color: #77D353;
         border: none;
         color: #fff;
         text-transform: uppercase;
         border-radius: 3px;
         cursor: pointer;
+        line-height: 35px;
     }
 }

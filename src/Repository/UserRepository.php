@@ -99,7 +99,18 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('phone', $param)
             ->getQuery();
 
-        return $query->getSingleScalarResult();
+        return $query->getResult();
+    }
+
+    public function getUserPhone($param)
+    {
+        $query = $this->createQueryBuilder('e')
+            ->select('e.phone')
+            ->where('e.id = :param')
+            ->setParameter('param', $param)
+            ->getQuery();
+
+        return $query->getResult();
     }
 
 }
