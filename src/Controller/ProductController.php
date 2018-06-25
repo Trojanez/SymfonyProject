@@ -25,7 +25,6 @@ class ProductController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $product = new Product();
         $product = $entityManager->getRepository(Product::class)->find($id);
 
         $screenSum = $entityManager->getRepository(Screen::class)->countScreenNumber($id);
@@ -33,7 +32,6 @@ class ProductController extends AbstractController
         $screenArray = $entityManager->getRepository(Screen::class)->getScreenAccordingProduct($id);
         $screen = array_shift($screenArray);
 
-        $user = new User();
         $user = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
 
         if ($request->isMethod('POST')) {
@@ -53,6 +51,7 @@ class ProductController extends AbstractController
                 );
                 return $this->redirectToRoute('product', array('id' => $id));
             } else {
+                $user = new User();
                 $user->setPhone($header);
                 $user->setIsSubscribe(1);
                 $user->setDate();
@@ -84,8 +83,6 @@ class ProductController extends AbstractController
      */
     public function set(Request $request, $id)
     {
-        $header = $request->headers->get('x-user-id');
-
         $id = intval($id);
         $session = $request->getSession();
 

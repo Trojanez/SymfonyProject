@@ -35,6 +35,7 @@ class CartController extends Controller
 
         if($productsInCart)
         {
+            // find products id according to parameters (keys) to show them in view
             $productsIds = array_keys($productsInCart);
             $products = $manager->getRepository(Product::class)->showProductsFromCart($productsIds);
         } else {
@@ -65,21 +66,24 @@ class CartController extends Controller
     }
 
     /**
-     * @Route("/cart/download/{id}", name="cartDownload")
+     * @Route("/cart/download/{image}", name="cartDownload")
      */
-    public function download(Request $request, $id)
+    public function download(Request $request, $image)
     {
+        // create Manager, get session, get header
         $entityManager = $this->getDoctrine()->getManager();
         $header = $request->headers->get('x-user-id');
         $session = $request->getSession();
 
         $productsInCart = $session->get('product');
 
+        // to download the game
         if($productsInCart)
         {
+            // find user, game and game id according to image from the parameter
             $userId = $entityManager->getRepository(User::class)->findOneBy(['phone' => $header]);
-            $game = $entityManager->getRepository(Product::class)->findOneBy(['image' => $id]);
-            $gameId = $entityManager->getRepository(Product::class)->getIdAccordingToImageName($id);
+            $game = $entityManager->getRepository(Product::class)->findOneBy(['image' => $image]);
+            $gameId = $entityManager->getRepository(Product::class)->getIdAccordingToImageName($image);
 
             $product = new UserProduct();
 
@@ -90,15 +94,13 @@ class CartController extends Controller
             $entityManager->persist($product);
             $entityManager->flush();
 
+            // if downloaded, we need to delete the game from cart
             unset($productsInCart[$gameId]);
             $session->set('product', $productsInCart);
 
-            /**
-             * $basePath can be either exposed (typically inside web/)
-             * or "internal"
-             */
+            // to download screen of the game
             $basePath = $webPath = $this->get('kernel')->getProjectDir() . '/public/images';
-            $filePath = $basePath.'/'.$id.'.png';
+            $filePath = $basePath.'/'.$image.'.png';
             $content = file_get_contents($filePath);
 
             // check if file exists
@@ -111,7 +113,7 @@ class CartController extends Controller
 
             //set headers
             $response->headers->set('Content-Type', 'image/png');
-            $response->headers->set('Content-Disposition', 'attachment;filename="'.$id.'.png');
+            $response->headers->set('Content-Disposition', 'attachment;filename="'.$image.'.png');
             $response->setContent($content);
 
             return $response;

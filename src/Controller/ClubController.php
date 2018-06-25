@@ -21,6 +21,7 @@ class ClubController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $header = $request->headers->get('x-user-id');
 
+        // if user subscribed or not
         $userSubscribed = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
 
         if($userSubscribed)
@@ -28,6 +29,7 @@ class ClubController extends AbstractController
             $CurrentUserId = $entityManager->getRepository(User::class)->getUserId($header);
             if(!empty($CurrentUserId))
             {
+                //find all downloaded games according to user ID
                 $product = $entityManager->getRepository(UserProduct::class)->getAllDownloadedGames($CurrentUserId);
 
                 /**

@@ -58,16 +58,6 @@ class UserRepository extends ServiceEntityRepository
 
         return $query->getResult();
     }
-    public function getUserSubscribeInfoAdditional($param)
-    {
-        $query = $this->createQueryBuilder('e')
-            ->select('e.is_subscribe')
-            ->where('e.phone = :phone')
-            ->setParameter('phone', $param)
-            ->getQuery();
-
-        return $query->getResult();
-    }
 
     public function getSubscribedDateForUser($param)
     {

@@ -39,11 +39,13 @@ class HomeController extends AbstractController
         $userPhone = array_column($userPhone, 'phone');
         $userPhone = array_shift($userPhone);
 
+        // check if header has been changed (if yes, clear session)
         if($header != $userPhone)
         {
             $session->clear();
         }
 
+        // get 2 categories
         $category1 = $entityManager->getRepository(Category::class)->find(1);
         $category2 = $entityManager->getRepository(Category::class)->find(2);
 
@@ -51,15 +53,17 @@ class HomeController extends AbstractController
         $checkUser = $entityManager->getRepository(User::class)->findOneBy(['phone' => $header]);
 
         // check if user subscribed or not
-        $userSubscribedAdditional = $entityManager->getRepository(User::class)->getUserSubscribeInfoAdditional($header);
-        $userSubscribedAdditional = array_column($userSubscribedAdditional, 'is_subscribe');
-        $userSubscribedAdditional = array_shift($userSubscribedAdditional);
+        $userSubscribed = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
+        $userSubscribed = array_column($userSubscribed, 'is_subscribe');
+        $userSubscribed = array_shift($userSubscribed);
 
-        if($checkUser != null and $userSubscribedAdditional == "1")
+        if($checkUser != null and $userSubscribed == "1")
         {
+            // get products in session for cart
             $productsInCart = $session->get('product');
             if(!empty($CurrentUserId))
             {
+                // get Downloaded games to not display in the Home page
                 $downloadedGames = $entityManager->getRepository(UserProduct::class)->getDownloadedGames($CurrentUserId);
                 $ids = implode(',', array_column($downloadedGames, "u_product_id"));
                 $integerIDs = array_map('intval', explode(',', $ids));
@@ -67,18 +71,20 @@ class HomeController extends AbstractController
 
             if($productsInCart)
             {
+                //find keys
                 $productsIds = array_keys($productsInCart);
-
+                // to not display products if in cart and downloaded
                 $product1 = $entityManager->getRepository(Product::class)->showProductsNotInCart(1, $productsIds, $integerIDs);
                 $product2 = $entityManager->getRepository(Product::class)->showProductsNotInCart(2, $productsIds, $integerIDs);
             } else
             {
-                //find the first Category and its products
+                //to not display products if downloaded
                 $product1 = $entityManager->getRepository(Product::class)->findProductsByCategoryId(1, $integerIDs);
                 $product2 = $entityManager->getRepository(Product::class)->findProductsByCategoryId(2, $integerIDs);
             }
         } else
         {
+            // if new user
             $product1 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(1);
             $product2 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(2);
         }
@@ -90,7 +96,7 @@ class HomeController extends AbstractController
             $header = $request->headers->get('x-user-id');
 
             $user = $entityManager->getRepository(User::class)->findOneBy(array('phone' => $header));
-
+            // if already exists in the table but unsubscribed (need only flush)
             if($user)
             {
                 $user->setIsSubscribe(1);
@@ -133,7 +139,7 @@ class HomeController extends AbstractController
             'category' => $category1,
             'product1' => $product2,
             'category1' => $category2,
-            'users' => $userSubscribedAdditional,
+            'users' => $userSubscribed,
             'header' => $header,
             'logged' => $user,
             'count' => $count
