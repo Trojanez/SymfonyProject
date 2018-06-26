@@ -38,6 +38,11 @@ class ProductController extends AbstractController
 
             $header = $request->headers->get('x-user-id');
 
+            if($header === null)
+            {
+                return new Response('Unfortunately, we couldn\'t find a phone number =(');
+            }
+
             $user = $entityManager->getRepository(User::class)->findOneBy(array('phone' => $header));
 
             if ($user) {
