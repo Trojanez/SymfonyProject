@@ -48,7 +48,11 @@ class ScreenRepository extends ServiceEntityRepository
     }
     */
 
-    public function getScreenAccordingProduct($id)
+    /**
+     * @param int $id
+     * @return array
+     */
+    public function getScreenAccordingProduct(int $id): array
     {
         $query = $this->createQueryBuilder('e')
             ->join('e.product', 'r')
@@ -59,7 +63,11 @@ class ScreenRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function countScreenNumber($id)
+    /**
+     * @param int $id
+     * @return array
+     */
+    public function countScreenNumber(int $id): array
     {
         $query = $this->createQueryBuilder('e')
             ->join('e.product', 'r')

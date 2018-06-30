@@ -83,7 +83,9 @@ class CartController extends Controller
             // find user, game and game id according to image from the parameter
             $userId = $entityManager->getRepository(User::class)->findOneBy(['phone' => $header]);
             $game = $entityManager->getRepository(Product::class)->findOneBy(['image' => $image]);
-            $gameId = $entityManager->getRepository(Product::class)->getIdAccordingToImageName($image);
+            $allGameIds = $entityManager->getRepository(Product::class)->getIdAccordingToImageName($image);
+            $gameId = array_column($allGameIds, 'id');
+            $gameId = array_shift($gameId);
 
             $product = new UserProduct();
 
@@ -117,6 +119,9 @@ class CartController extends Controller
             $response->setContent($content);
 
             return $response;
-        }
+        } else
+            {
+            return new Response('Only subscribed users can download games');
+            }
     }
 }

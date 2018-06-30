@@ -30,12 +30,12 @@ class HomeController extends AbstractController
         $header = $request->headers->get('x-user-id');
 
         // get Current user ID according to phone number
-        $CurrentUserId = $entityManager->getRepository(User::class)->getUserId($header);
-        $CurrentUserId = array_column($CurrentUserId, 'id');
-        $CurrentUserId = array_shift($CurrentUserId);
+        $currentUserId = $entityManager->getRepository(User::class)->getUserId($header);
+        $currentUserId = array_column($currentUserId, 'id');
+        $currentUserId = array_shift($currentUserId);
 
         //get user phone according to ID
-        $userPhone = $entityManager->getRepository(User::class)->getUserPhone($CurrentUserId);
+        $userPhone = $entityManager->getRepository(User::class)->getUserPhone($currentUserId);
         $userPhone = array_column($userPhone, 'phone');
         $userPhone = array_shift($userPhone);
 
@@ -61,10 +61,10 @@ class HomeController extends AbstractController
         {
             // get products in session for cart
             $productsInCart = $session->get('product');
-            if(!empty($CurrentUserId))
+            if(!empty($currentUserId))
             {
                 // get Downloaded games to not display in the Home page
-                $downloadedGames = $entityManager->getRepository(UserProduct::class)->getDownloadedGames($CurrentUserId);
+                $downloadedGames = $entityManager->getRepository(UserProduct::class)->getDownloadedGames($currentUserId);
                 $ids = implode(',', array_column($downloadedGames, "u_product_id"));
                 $integerIDs = array_map('intval', explode(',', $ids));
             }
@@ -90,11 +90,10 @@ class HomeController extends AbstractController
         }
 
         // subscribe user
-        $user = new User();
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST'))
+        {
 
             $header = $request->headers->get('x-user-id');
-
             if($header === null)
             {
                 return new Response('Unfortunately, we couldn\'t find a phone number =(');
@@ -113,7 +112,8 @@ class HomeController extends AbstractController
                     'You have successfully subscribed to game club! Download as much as you want.'
                 );
                 return $this->redirectToRoute('home');
-            }else {
+            }else
+                {
                 $user = new User();
                 $user->setPhone($header);
                 $user->setIsSubscribe(1);
@@ -146,7 +146,6 @@ class HomeController extends AbstractController
             'category1' => $category2,
             'users' => $userSubscribed,
             'header' => $header,
-            'logged' => $user,
             'count' => $count
         ]);
     }

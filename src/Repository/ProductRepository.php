@@ -48,7 +48,12 @@ class ProductRepository extends ServiceEntityRepository
     }
     */
 
-    public function findProductsByCategoryId($id, array $param)
+    /**
+     * @param int $id
+     * @param array $param
+     * @return array
+     */
+    public function findProductsByCategoryId(int $id, array $param): array
     {
         $query = $this->createQueryBuilder('p')
             ->join('p.category', 'c')
@@ -62,7 +67,11 @@ class ProductRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function findAllProductsByCategoryId($id)
+    /**
+     * @param int $id
+     * @return array
+     */
+    public function findAllProductsByCategoryId(int $id): array
     {
         $query = $this->createQueryBuilder('p')
             ->join('p.category', 'c')
@@ -74,7 +83,11 @@ class ProductRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function showProductsFromCart($param)
+    /**
+     * @param array $param
+     * @return array|null
+     */
+    public function showProductsFromCart(array $param): ?array
     {
         $query = $this->createQueryBuilder('p')
             ->where('p.id IN (:param)')
@@ -84,7 +97,13 @@ class ProductRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function showProductsNotInCart($id, $param, $param2)
+    /**
+     * @param int $id
+     * @param array $param
+     * @param array $param2
+     * @return array
+     */
+    public function showProductsNotInCart(int $id, array $param, array $param2): array
     {
         $query = $this->createQueryBuilder('p')
             ->join('p.category', 'c')
@@ -100,14 +119,18 @@ class ProductRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function getIdAccordingToImageName($id)
+    /**
+     * @param string $image
+     * @return array
+     */
+    public function getIdAccordingToImageName(string $image): array
     {
         $query = $this->createQueryBuilder('p')
             ->select('p.id')
             ->where('p.image = :name')
-            ->setParameter('name',$id)
+            ->setParameter('name',$image)
             ->getQuery();
 
-        return $query->getSingleScalarResult();
+        return $query->getResult();
     }
 }

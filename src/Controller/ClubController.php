@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
 use App\Entity\User;
 use App\Entity\UserProduct;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,10 +44,12 @@ class ClubController extends AbstractController
 
             $userDownloadDate = $entityManager->getRepository(User::class)->getSubscribedDateForUser($CurrentUserId);
             $userDownloads = $entityManager->getRepository(UserProduct::class)->getAmountOfDownloadedGames($CurrentUserId);
-        } else {
+        } else
+            {
             $userDownloadDate = null;
             $userDownloads = null;
             $product = null;
+            $result = null;
         }
 
 
@@ -63,7 +65,7 @@ class ClubController extends AbstractController
     /**
      * @Route("/unsubscribe", name="unsubscribe")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return Response
      */
 
     public function unsubscribe(Request $request)
@@ -78,10 +80,16 @@ class ClubController extends AbstractController
 
         $user = $entityManager->getRepository(User::class)->findOneBy(['id' => $currentUserId]);
 
-        $user->setIsSubscribe(0);
-        $entityManager->flush();
-        $session->clear();
+        if($user === null)
+        {
+            return new Response('Only subscribed users can be unsubscribed');
+        }else
+        {
+            $user->setIsSubscribe(0);
+            $entityManager->flush();
+            $session->clear();
 
-        return $this->redirectToRoute('home');
+            return $this->redirectToRoute('home');
+        }
     }
 }

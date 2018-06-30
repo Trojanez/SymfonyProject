@@ -32,7 +32,7 @@ class ProductController extends AbstractController
         $screenArray = $entityManager->getRepository(Screen::class)->getScreenAccordingProduct($id);
         $screen = array_shift($screenArray);
 
-        $user = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
+        $userSubscribed = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
 
         if ($request->isMethod('POST')) {
 
@@ -45,7 +45,8 @@ class ProductController extends AbstractController
 
             $user = $entityManager->getRepository(User::class)->findOneBy(array('phone' => $header));
 
-            if ($user) {
+            if ($user)
+            {
                 $user->setIsSubscribe(1);
                 $user->setDate();
                 $entityManager->flush();
@@ -55,7 +56,8 @@ class ProductController extends AbstractController
                     'You have successfully subscribed to game club! Download as much as you want.'
                 );
                 return $this->redirectToRoute('product', array('id' => $id));
-            } else {
+            } else
+                {
                 $user = new User();
                 $user->setPhone($header);
                 $user->setIsSubscribe(1);
@@ -76,7 +78,7 @@ class ProductController extends AbstractController
         return $this->render('product/product.html.twig', array(
             'title' => 'Gameloft Games',
             'product' => $product,
-            'users' => $user,
+            'users' => $userSubscribed,
             'screen' => $screen,
             'screens' => $screenArray,
             'screenSum' => $screenSum

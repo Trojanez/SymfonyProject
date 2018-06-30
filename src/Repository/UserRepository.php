@@ -48,18 +48,26 @@ class UserRepository extends ServiceEntityRepository
     }
     */
 
-    public function getUserSubscribeInfo($param)
+    /**
+     * @param string $phone
+     * @return array
+     */
+    public function getUserSubscribeInfo(?string $phone): array
     {
         $query = $this->createQueryBuilder('e')
             ->select('e.is_subscribe')
             ->where('e.phone = :phone')
-            ->setParameter('phone', $param)
+            ->setParameter('phone', $phone)
             ->getQuery();
 
         return $query->getResult();
     }
 
-    public function getSubscribedDateForUser($param)
+    /**
+     * @param array $param
+     * @return array
+     */
+    public function getSubscribedDateForUser(array $param): array
     {
         $query = $this->createQueryBuilder('e')
             ->select('e.date')
@@ -70,29 +78,26 @@ class UserRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function getDownloadsForUser($param)
-    {
-        $query = $this->createQueryBuilder('e')
-            ->select('e.downloads')
-            ->where('e.phone = :phone')
-            ->setParameter('phone', $param)
-            ->getQuery();
-
-        return $query->getResult();
-    }
-
-    public function getUserId($param)
+    /**
+     * @param null|string $phone
+     * @return array
+     */
+    public function getUserId(?string $phone): array
     {
         $query = $this->createQueryBuilder('e')
             ->select('e.id')
             ->where('e.phone = :phone')
-            ->setParameter('phone', $param)
+            ->setParameter('phone', $phone)
             ->getQuery();
 
         return $query->getResult();
     }
 
-    public function getUserPhone($param)
+    /**
+     * @param int|null $param
+     * @return array
+     */
+    public function getUserPhone(?int $param): array
     {
         $query = $this->createQueryBuilder('e')
             ->select('e.phone')
