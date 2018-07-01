@@ -80,7 +80,7 @@ class ClubController extends AbstractController
 
         $user = $entityManager->getRepository(User::class)->findOneBy(['id' => $currentUserId]);
 
-        if($user === null)
+        if($user === null OR $user->getIsSubscribe() == false)
         {
             return new Response('Only subscribed users can be unsubscribed');
         }else

@@ -49,7 +49,7 @@ class UserRepository extends ServiceEntityRepository
     */
 
     /**
-     * @param string $phone
+     * @param null|string $phone
      * @return array
      */
     public function getUserSubscribeInfo(?string $phone): array

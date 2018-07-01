@@ -57,7 +57,7 @@ class HomeController extends AbstractController
         $userSubscribed = array_column($userSubscribed, 'is_subscribe');
         $userSubscribed = array_shift($userSubscribed);
 
-        if($checkUser != null and $userSubscribed == "1")
+        if($checkUser != null and $checkUser->getIsSubscribe() == true)
         {
             // get products in session for cart
             $productsInCart = $session->get('product');
