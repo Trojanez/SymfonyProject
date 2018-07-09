@@ -24,11 +24,9 @@ class ClubController extends AbstractController
         // if user subscribed or not
         $userSubscribed = $entityManager->getRepository(User::class)->getUserSubscribeInfo($header);
 
-        if($userSubscribed)
-        {
+        if($userSubscribed) {
             $CurrentUserId = $entityManager->getRepository(User::class)->getUserId($header);
-            if(!empty($CurrentUserId))
-            {
+            if(!empty($CurrentUserId)) {
                 //find all downloaded games according to user ID
                 $product = $entityManager->getRepository(UserProduct::class)->getAllDownloadedGames($CurrentUserId);
 
@@ -44,8 +42,7 @@ class ClubController extends AbstractController
 
             $userDownloadDate = $entityManager->getRepository(User::class)->getSubscribedDateForUser($CurrentUserId);
             $userDownloads = $entityManager->getRepository(UserProduct::class)->getAmountOfDownloadedGames($CurrentUserId);
-        } else
-            {
+        } else {
             $userDownloadDate = null;
             $userDownloads = null;
             $product = null;
@@ -80,11 +77,9 @@ class ClubController extends AbstractController
 
         $user = $entityManager->getRepository(User::class)->findOneBy(['id' => $currentUserId]);
 
-        if($user === null OR $user->getIsSubscribe() == false)
-        {
+        if($user === null OR $user->getIsSubscribe() == false) {
             return new Response('Only subscribed users can be unsubscribed');
-        }else
-        {
+        } else {
             $user->setIsSubscribe(0);
             $entityManager->flush();
             $session->clear();

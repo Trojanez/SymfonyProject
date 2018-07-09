@@ -38,15 +38,13 @@ class ProductController extends AbstractController
 
             $header = $request->headers->get('x-user-id');
 
-            if($header === null)
-            {
+            if($header === null) {
                 return new Response('Unfortunately, we couldn\'t find a phone number =(');
             }
 
             $user = $entityManager->getRepository(User::class)->findOneBy(array('phone' => $header));
 
-            if ($user)
-            {
+            if ($user) {
                 $user->setIsSubscribe(1);
                 $user->setDate();
                 $entityManager->flush();
@@ -56,8 +54,7 @@ class ProductController extends AbstractController
                     'You have successfully subscribed to game club! Download as much as you want.'
                 );
                 return $this->redirectToRoute('product', array('id' => $id));
-            } else
-                {
+            } else {
                 $user = new User();
                 $user->setPhone($header);
                 $user->setIsSubscribe(1);
@@ -95,13 +92,11 @@ class ProductController extends AbstractController
 
         $productsInCart = [];
 
-        if($session->get('product'))
-        {
+        if($session->get('product')) {
             $productsInCart = $session->get('product');
         }
 
-        if(!array_key_exists($id, $productsInCart))
-        {
+        if(!array_key_exists($id, $productsInCart)) {
             $productsInCart[$id] = 1;
         }
 

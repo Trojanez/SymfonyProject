@@ -40,8 +40,7 @@ class HomeController extends AbstractController
         $userPhone = array_shift($userPhone);
 
         // check if header has been changed (if yes, clear session)
-        if($header != $userPhone)
-        {
+        if($header != $userPhone) {
             $session->clear();
         }
 
@@ -57,52 +56,44 @@ class HomeController extends AbstractController
         $userSubscribed = array_column($userSubscribed, 'is_subscribe');
         $userSubscribed = array_shift($userSubscribed);
 
-        if($checkUser != null and $checkUser->getIsSubscribe() == true)
-        {
+        if($checkUser != null and $checkUser->getIsSubscribe() == true) {
             // get products in session for cart
             $productsInCart = $session->get('product');
-            if(!empty($currentUserId))
-            {
+            if(!empty($currentUserId)) {
                 // get Downloaded games to not display in the Home page
                 $downloadedGames = $entityManager->getRepository(UserProduct::class)->getDownloadedGames($currentUserId);
                 $ids = implode(',', array_column($downloadedGames, "u_product_id"));
                 $integerIDs = array_map('intval', explode(',', $ids));
             }
 
-            if($productsInCart)
-            {
+            if($productsInCart) {
                 //find keys
                 $productsIds = array_keys($productsInCart);
                 // to not display products if in cart and downloaded
                 $product1 = $entityManager->getRepository(Product::class)->showProductsNotInCart(1, $productsIds, $integerIDs);
                 $product2 = $entityManager->getRepository(Product::class)->showProductsNotInCart(2, $productsIds, $integerIDs);
-            } else
-            {
+            } else {
                 //to not display products if downloaded
                 $product1 = $entityManager->getRepository(Product::class)->findProductsByCategoryId(1, $integerIDs);
                 $product2 = $entityManager->getRepository(Product::class)->findProductsByCategoryId(2, $integerIDs);
             }
-        } else
-        {
+        } else {
             // if new user
             $product1 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(1);
             $product2 = $entityManager->getRepository(Product::class)->findAllProductsByCategoryId(2);
         }
 
         // subscribe user
-        if ($request->isMethod('POST'))
-        {
+        if ($request->isMethod('POST')) {
 
             $header = $request->headers->get('x-user-id');
-            if($header === null)
-            {
+            if($header === null) {
                 return new Response('Unfortunately, we couldn\'t find a phone number =(');
             }
 
             $user = $entityManager->getRepository(User::class)->findOneBy(array('phone' => $header));
             // if already exists in the table but unsubscribed (need only flush)
-            if($user)
-            {
+            if($user) {
                 $user->setIsSubscribe(1);
                 $user->setDate();
                 $entityManager->flush();
@@ -112,7 +103,7 @@ class HomeController extends AbstractController
                     'You have successfully subscribed to game club! Download as much as you want.'
                 );
                 return $this->redirectToRoute('home');
-            }else
+            } else
                 {
                 $user = new User();
                 $user->setPhone($header);
@@ -133,8 +124,7 @@ class HomeController extends AbstractController
 
         // count amount of items added to the cart
         $count = 0;
-        if($session->get('product') !== null)
-        {
+        if($session->get('product') !== null) {
             $count = count($session->get('product'));
         }
 

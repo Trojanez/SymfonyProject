@@ -33,8 +33,7 @@ class CartController extends Controller
 
         $productsInCart = $session->get('product');
 
-        if($productsInCart)
-        {
+        if($productsInCart) {
             // find products id according to parameters (keys) to show them in view
             $productsIds = array_keys($productsInCart);
             $products = $manager->getRepository(Product::class)->showProductsFromCart($productsIds);
@@ -56,8 +55,7 @@ class CartController extends Controller
     {
         $session = $request->getSession();
 
-        if($session->get('product') != null)
-        {
+        if($session->get('product') != null) {
             $session->clear();
             return $this->redirectToRoute('home');
         } else {
@@ -78,8 +76,7 @@ class CartController extends Controller
         $productsInCart = $session->get('product');
 
         // to download the game
-        if($productsInCart)
-        {
+        if($productsInCart) {
             // find user, game and game id according to image from the parameter
             $userId = $entityManager->getRepository(User::class)->findOneBy(['phone' => $header]);
             $game = $entityManager->getRepository(Product::class)->findOneBy(['image' => $image]);
@@ -119,9 +116,8 @@ class CartController extends Controller
             $response->setContent($content);
 
             return $response;
-        } else
-            {
+        } else {
             return new Response('Only subscribed users can download games');
-            }
+        }
     }
 }
